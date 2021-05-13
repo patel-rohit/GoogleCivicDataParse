@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<form asp-controller="Home" asp-action="ParseData" method="post" class="frmInput">
+    <div class="form-group">
+        <label for="email">API Key:</label>
+        <input type="text" class="form-control" placeholder="Enter API Key" id="apikey" name="apikey" required>
+    </div>
+
+    <div class="form-group">
+        <label for="pwd">Address:</label>
+        <input type="text" class="form-control" placeholder="Enter adress" id="address" name="address" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+
+    <br />
+
+
+</form>
+
+
+<div class="col-12 output" style="display:none;">
+    <h2>Output</h2>
+   
+
+    <div class="row">
+        <div class="col-6">
+            <pre></pre>
+
+        </div>
+
+        <div class="col-6">
+            <div id="displayText"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $('.frmInput').submit(function (e) { 
+
+            var req = {
+                apiKey: $('#apikey').val(),
+                address: $('#address').val(),
+            }
+
+            $.post('/Home/ParseData', req, function (data) {
+                if (!data.success) {
+                    $('div.output').hide();
+                    alert(data.errorMessage);
+                    return;
+                }
+
+                $('div.output').show().find('pre').html(JSON.stringify(data.data.data, undefined, 2));
+                $('#displayText').html(data.data.displayText);
+                
+            });
+
+            return false;
+        });
+    </script>
+}
